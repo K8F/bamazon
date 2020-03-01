@@ -1,10 +1,11 @@
 -- Drops the animals_db if it exists currently --
-DROP DATABASE IF EXISTS bamazon;
+DROP DATABASE IF EXISTS bamazon_db;
 -- Creates the "animals_db" database --
-CREATE DATABASE bamazon;
+CREATE DATABASE bamazon_db;
 
 -- Makes it so all of the following code will affect animals_db --
-USE bamazon;
+USE bamazon_db;
+
 
 -- Creates the table "people" within animals_db --
 CREATE TABLE products (
@@ -17,9 +18,9 @@ CREATE TABLE products (
   
   price INTEGER(10) NOT NULL,
   
-  stock_quanitity INTEGER(10) NOT NULL,
+  stock_quantity INTEGER(10) NOT NULL,
   
-  PRIMARY KEY(id)
+  PRIMARY KEY(item_id)
   
 );
 
