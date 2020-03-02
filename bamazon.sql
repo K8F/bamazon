@@ -56,3 +56,4 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Shampoo", "Bathroom", 10, 30);
 
 
+ALTER TABLE products ADD COLUMN product_sales DECIMAL(7,2) DEFAULT '0.00';

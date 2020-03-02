@@ -15,14 +15,13 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
 
-console.log("i work")
-
 // If connection doesn't work, throws error, else...
 connection.connect(function (err) {
     if (err) throw err;
 
     // when user runs app, app products display
     displayProducts();
+    
 
 });
 
@@ -63,10 +62,12 @@ function promptPurchase() {
                 }
                 return false;
             }
-        }, {
+        }, 
+        
+        {
             name: "productUnits",
             type: "input",
-            message: "How many units do you want?",
+            message: "How many do you want to buy?",
             validate: function (value) {
                 if (isNaN(value) === false) {
                     return true;
@@ -75,10 +76,69 @@ function promptPurchase() {
             }
 
         }
-    ])
-}
+    ]).then(function(answer) {
+
+		// Queries database for selected product.
+		var query = "Select stock_quantity, price, product_sales, department_name FROM products WHERE ?";
+		connection.query(query, { item_id: answer.productID}, function(err, res) {
+			if (err) throw err;
+			var available_stock = res[0].stock_quantity;
+			var price_per_unit = res[0].price;
+			var productSales = res[0].product_sales;
+            var productDepartment = res[0].department_name;
+            var stock=res[0].stock_quantity;
+
+            console.log(stock);
+
+			// Checks there's enough inventory  to process user's request.
+			if (available_stock >= answer.productUnits) {
+
+				// Processes user's request passing in data to complete purchase.
+				completePurchase(available_stock, price_per_unit, productSales, productDepartment, answer.productID, answer.productUnits);
+			} else {
+
+				// Tells user there isn't enough stock left.
+				console.log("There isn't enough stock left! Run the app again if you want to purchase something else.");
+            }
+            connection.end();
+
+        });
+
+	});
+};
 
 
-//after user places order, check to see if there is enough product
-    //ifnot, log "insufficient quantity!" > prevent order
-    //if so, fullfill customer order & update database, after the update, show customer total cost
+// Completes user's request to purchase product.
+var completePurchase = function(availableStock, price, productSales, productDepartment, selectedProductID, selectedProductUnits) {
+	
+	// Updates stock quantity once purchase complete.
+	var updatedStockQuantity = availableStock - selectedProductUnits;
+
+	// Calculates total price for purchase based on unit price, and number of units.
+	var totalPrice = price * selectedProductUnits;
+
+	// Updates total product sales.
+	var updatedProductSales = parseInt(productSales) + parseInt(totalPrice);
+	
+	// Updates stock quantity on the database based on user's purchase.
+	var query = "UPDATE products SET ? WHERE ?";
+	connection.query(query, [{
+		stock_quantity: updatedStockQuantity,
+		product_sales: updatedProductSales
+	}, {
+		item_id: selectedProductID
+	}], function(err, res) {
+
+		if (err) throw err;
+		// Display the total price for that purchase.
+        console.log("Thanks for shopping with us! Here's your total: " + totalPrice);
+        
+        //Prompts user to run app again for additional purchases
+        console.log("To make another purchase, run the app again.")
+
+		// Updates department revenue based on purchase.
+		//updateDepartmentRevenue(updatedProductSales, productDepartment);
+		// Displays products so user can make a new selection.
+	});
+};
+
