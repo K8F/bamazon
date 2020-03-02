@@ -36,7 +36,7 @@ To create a database:
 1. On line 14, enter your MySQL password. 
 1. To test your connection, run `node bamazonCusomter.js`. If the connection is successful, you'll see the first user prompt described in the next section, "Making Purchases with the Bamazon App"
 
-### Making Purchases with the Bamazon App. 
+## Making Purchases with the Bamazon App. 
 
 Now that you've set up the app and database on your local instance, you can start "purchasing" items on Bamazon. 
 
@@ -53,7 +53,7 @@ To make a purchase:
         
         ![unsuccessful-purchase](images/successful-purchase.gif)
         
-        **Note**: We don't want to waste your time with items that are completely out of stock. We've made sure these items do not return when you are making your purchase selection. 
+        **Note**: We don't want to waste your time with items that are completely out of stock. We've made sure these items do not return when you are making your purchase selection. In the example below, someone has purchased the last 3 units of toilet paper. When they run the app again, the toilet paper doesn't show up in the list of products. 
         
         ![hide-outofstock](images/hide-outofstock.gif)
         
