@@ -19,15 +19,14 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
 
-    // when user runs app, app products display
+    // when user runs app, products display
     displayProducts();
-    
 
 });
 
 
 
-//function that displays all products: id, names, prices.
+//function that displays info on all products: id, names, prices.
 
 var displayProducts = function () {
     var query = "Select * FROM products";
@@ -36,9 +35,14 @@ var displayProducts = function () {
         if (err) throw err;
 
         for (var i = 0; i < res.length; i++) {
+
+            //only displays items that are in stock
+            if(res[i].stock_quantity > 0){
+                
             console.log("Product ID: " + res[i].item_id + " || Product Name: " +
                 res[i].product_name + " || Price: $" + res[i].price);
         }
+    }
 
         // Requests product and number of product items user wishes to purchase.
         promptPurchase();
@@ -48,7 +52,7 @@ var displayProducts = function () {
 
 //after displaying inventory, prompt user with two messages
 //  product id
-//  how much? 
+//  how many? 
 
 function promptPurchase() {
     inquirer.prompt([
@@ -94,7 +98,7 @@ function promptPurchase() {
 			if (available_stock >= answer.productUnits) {
 
 				// Processes user's request passing in data to complete purchase.
-				completePurchase(available_stock, price_per_unit, productSales, productDepartment, answer.productID, answer.productUnits);
+				completePurchase(available_stock, price_per_unit, answer.productID, answer.productUnits);
 			} else {
 
 				// Tells user there isn't enough stock left.
@@ -109,22 +113,18 @@ function promptPurchase() {
 
 
 // Completes user's request to purchase product.
-var completePurchase = function(availableStock, price, productSales, productDepartment, selectedProductID, selectedProductUnits) {
+var completePurchase = function(availableStock, price, selectedProductID, selectedProductUnits) {
 	
 	// Updates stock quantity once purchase complete.
 	var updatedStockQuantity = availableStock - selectedProductUnits;
 
 	// Calculates total price for purchase based on unit price, and number of units.
 	var totalPrice = price * selectedProductUnits;
-
-	// Updates total product sales.
-	var updatedProductSales = parseInt(productSales) + parseInt(totalPrice);
 	
 	// Updates stock quantity on the database based on user's purchase.
 	var query = "UPDATE products SET ? WHERE ?";
 	connection.query(query, [{
 		stock_quantity: updatedStockQuantity,
-		product_sales: updatedProductSales
 	}, {
 		item_id: selectedProductID
 	}], function(err, res) {
