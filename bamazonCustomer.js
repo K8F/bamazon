@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "568csb8i",
+    password: "",
     database: "bamazon_db"
 });
 
@@ -23,7 +23,6 @@ connection.connect(function (err) {
     displayProducts();
 
 });
-
 
 
 //function that displays info on all products: id, names, prices.
@@ -88,11 +87,9 @@ function promptPurchase() {
 			if (err) throw err;
 			var available_stock = res[0].stock_quantity;
 			var price_per_unit = res[0].price;
-			var productSales = res[0].product_sales;
-            var productDepartment = res[0].department_name;
             var stock=res[0].stock_quantity;
 
-            console.log(stock);
+           //console.log(stock); //test that the database is updating
 
 			// Checks there's enough inventory  to process user's request.
 			if (available_stock >= answer.productUnits) {
@@ -136,9 +133,6 @@ var completePurchase = function(availableStock, price, selectedProductID, select
         //Prompts user to run app again for additional purchases
         console.log("To make another purchase, run the app again.")
 
-		// Updates department revenue based on purchase.
-		//updateDepartmentRevenue(updatedProductSales, productDepartment);
-		// Displays products so user can make a new selection.
 	});
 };
 
