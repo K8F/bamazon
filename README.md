@@ -15,7 +15,7 @@ Setting up Bamazon is pretty easy. You will need to download a couple things fir
 
 Once you've downloaded the git repo, open it and use the command line to `cd` to the root of the file. You'll know you are at the root if you see this readme and the file `bamazonCustomer.js`. 
 
-    ![see-root](images/ls.gif)
+![see-root](images/ls.gif)
 
 
 
